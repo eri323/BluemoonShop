@@ -7,9 +7,9 @@ import type { Categoria } from '@/lib/tipos';
 import { FormMedidas } from './FormMedidas';
 
 const ETIQUETA_ORDEN: Record<Orden, string> = {
-  nuevo: 'Lo más nuevo',
-  'precio-asc': 'Precio: de menor a mayor',
-  'precio-desc': 'Precio: de mayor a menor',
+  nuevo: 'Más nuevo',
+  'precio-asc': 'Menor precio',
+  'precio-desc': 'Mayor precio',
 };
 
 function Grupo<T extends string>({ titulo, opciones, etiqueta, actual, alElegir }: {
@@ -49,7 +49,7 @@ export function PanelFiltros({ filtros, categorias, total, hayFiltros, alCambiar
   alLimpiar: () => void;
 }) {
   return (
-    <aside aria-label="Filtros" className="flex flex-col gap-5 esc:sticky esc:top-24 esc:self-start">
+    <aside aria-label="Filtros" className="flex flex-col gap-4 esc:sticky esc:top-24 esc:self-start">
       <Grupo
         titulo="Categoría"
         opciones={categorias}
@@ -79,20 +79,7 @@ export function PanelFiltros({ filtros, categorias, total, hayFiltros, alCambiar
         }
       />
 
-      <label className="flex flex-col gap-2 text-sm font-semibold">
-        Ordenar por
-        <select
-          value={filtros.orden}
-          onChange={(e) => alCambiar({ ...filtros, orden: e.target.value as Orden })}
-          className="h-12 rounded-xl border border-borde bg-superficie px-3 text-base font-normal text-texto"
-        >
-          {ORDENES.map((orden) => (
-            <option key={orden} value={orden}>{ETIQUETA_ORDEN[orden]}</option>
-          ))}
-        </select>
-      </label>
-
-      <div className="flex min-h-11 items-center justify-between gap-4 border-t border-borde pt-4">
+      <div className="flex min-h-12 flex-wrap items-center gap-x-4 gap-y-2 border-t border-borde pt-4">
         <p aria-live="polite" className="font-semibold">
           {total} {total === 1 ? 'prenda' : 'prendas'}
         </p>
@@ -101,6 +88,16 @@ export function PanelFiltros({ filtros, categorias, total, hayFiltros, alCambiar
             Limpiar filtros
           </button>
         )}
+        <select
+          aria-label="Ordenar por"
+          value={filtros.orden}
+          onChange={(e) => alCambiar({ ...filtros, orden: e.target.value as Orden })}
+          className="ml-auto h-11 rounded-xl border border-borde bg-superficie px-2 text-base text-texto"
+        >
+          {ORDENES.map((orden) => (
+            <option key={orden} value={orden}>{ETIQUETA_ORDEN[orden]}</option>
+          ))}
+        </select>
       </div>
     </aside>
   );

@@ -20,6 +20,8 @@ function aTexto(medidas: Medidas): Texto {
 /** "Según mis medidas": lo que no sea un número mayor que cero se ignora, sin error. */
 export function FormMedidas({ medidas, alCambiar }: { medidas: Medidas; alCambiar: (m: Medidas) => void }) {
   const [texto, setTexto] = useState<Texto>(() => aTexto(medidas));
+  // Abierto de entrada solo si el link ya trae medidas; después manda la clienta.
+  const [abierto, setAbierto] = useState(() => Object.keys(medidas).length > 0);
 
   // Si la URL cambia por fuera (Limpiar filtros, atrás), los campos se ponen al día.
   const firmaUrl = JSON.stringify(aTexto(medidas));
@@ -36,10 +38,14 @@ export function FormMedidas({ medidas, alCambiar }: { medidas: Medidas; alCambia
   }
 
   return (
-    <fieldset>
-      <legend className="text-sm font-semibold">Según mis medidas</legend>
-      <p className="mb-2 mt-0.5 text-sm text-tenue">En centímetros. Te mostramos lo que te queda, con 4 cm de margen.</p>
-      <div className="grid grid-cols-3 gap-2">
+    // Plegado por defecto para que en celular las prendas no queden lejos.
+    <details open={abierto} onToggle={(e) => setAbierto(e.currentTarget.open)} className="group rounded-xl border border-borde px-4">
+      <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between text-sm font-semibold [&::-webkit-details-marker]:hidden">
+        Según mis medidas
+        <span aria-hidden="true" className="text-lg text-tenue transition-transform group-open:rotate-45">+</span>
+      </summary>
+      <p className="mb-2 text-sm text-tenue">En centímetros. Te mostramos lo que te queda, con 4 cm de margen.</p>
+      <div className="grid grid-cols-3 gap-2 pb-4">
         {MEDIDAS_CLIENTA.map((clave) => (
           <label key={clave} className="flex flex-col gap-1 text-sm text-tenue">
             {NOMBRE[clave]}
@@ -57,6 +63,6 @@ export function FormMedidas({ medidas, alCambiar }: { medidas: Medidas; alCambia
           </label>
         ))}
       </div>
-    </fieldset>
+    </details>
   );
 }

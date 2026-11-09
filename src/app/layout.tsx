@@ -41,8 +41,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <TemaProvider>
           <ApartadosProvider>
             <Encabezado />
-            {/* El espacio de abajo deja libre la barra de pestañas en celular. */}
-            <main className="mx-auto max-w-6xl px-4 pb-28 esc:px-8 esc:pb-16">{children}</main>
+            {/* El espacio de abajo deja libre la barra de pestañas en celular. Se recorta a lo ancho
+                porque la carta de Match sale volando hacia los lados. */}
+            <main className="mx-auto max-w-6xl overflow-x-clip px-4 pb-28 esc:px-8 esc:pb-16">{children}</main>
             <PestanasMovil />
           </ApartadosProvider>
         </TemaProvider>
