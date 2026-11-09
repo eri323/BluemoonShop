@@ -1,1 +1,171 @@
 @import "tailwindcss";
+
+/*
+ * Identidad de Bluemoon: noche azul casi negra y el azul neón del logo como único acento.
+ * Las fotos (maniquí sobre gris claro) son lo más luminoso de la página.
+ */
+:root,
+[data-theme="oscuro"] {
+  color-scheme: dark;
+  --fondo: #07080f;
+  --superficie: #0f1226;
+  --superficie-alta: #181c3a;
+  --borde: #282d57;
+  --texto: #ecebfa;
+  --tenue: #a6aad0;
+  --acento: #6f8bff;
+  --acento-fuerte: #2447f5;
+  --sobre-acento: #ffffff;
+  --brillo: 0 0 28px rgb(58 96 255 / 0.5);
+  --brillo-texto: 0 0 18px rgb(96 128 255 / 0.75);
+}
+
+[data-theme="claro"] {
+  color-scheme: light;
+  --fondo: #f2f1f8;
+  --superficie: #ffffff;
+  --superficie-alta: #e6e5f1;
+  --borde: #cdcde0;
+  --texto: #0c0e24;
+  --tenue: #545980;
+  --acento: #1b3be0;
+  --acento-fuerte: #1b3be0;
+  --sobre-acento: #ffffff;
+  --brillo: 0 0 0 transparent;
+  --brillo-texto: none;
+}
+
+@theme inline {
+  --color-fondo: var(--fondo);
+  --color-superficie: var(--superficie);
+  --color-superficie-alta: var(--superficie-alta);
+  --color-borde: var(--borde);
+  --color-texto: var(--texto);
+  --color-tenue: var(--tenue);
+  --color-acento: var(--acento);
+  --color-acento-fuerte: var(--acento-fuerte);
+  --color-sobre-acento: var(--sobre-acento);
+  --font-titulo: var(--font-gloock), Georgia, serif;
+  --font-texto: var(--font-figtree), system-ui, sans-serif;
+  --shadow-brillo: var(--brillo);
+  /* A partir de aquí hay menú arriba; por debajo, pestañas abajo. */
+  --breakpoint-esc: 900px;
+}
+
+html {
+  background: var(--fondo);
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  min-height: 100dvh;
+  background: var(--fondo);
+  color: var(--texto);
+  font-family: var(--font-texto);
+  line-height: 1.5;
+  -webkit-tap-highlight-color: transparent;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-titulo);
+  font-weight: 400;
+  line-height: 1.1;
+  text-wrap: balance;
+}
+
+:focus-visible {
+  outline: 2px solid var(--acento);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* En la capa de componentes, para que las utilidades de Tailwind (hidden, min-h-*) ganen. */
+@layer components {
+  /* Botones y enlaces con forma de botón. */
+  .boton {
+    display: inline-flex;
+    min-height: 48px;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border-radius: 999px;
+    padding: 0 1.4rem;
+    font-weight: 600;
+    transition: transform 120ms ease, background-color 120ms ease, border-color 120ms ease;
+  }
+
+  .boton:active {
+    transform: scale(0.97);
+  }
+
+  .boton-principal {
+    background: var(--acento-fuerte);
+    color: var(--sobre-acento);
+    box-shadow: var(--brillo);
+  }
+
+  .boton-secundario {
+    border: 1px solid var(--borde);
+    background: var(--superficie);
+    color: var(--texto);
+  }
+
+  .boton-secundario[aria-pressed="true"] {
+    border-color: var(--acento);
+    color: var(--acento);
+  }
+
+  /* Chip de filtro. */
+  .chip {
+    display: inline-flex;
+    min-height: 40px;
+    flex-shrink: 0;
+    align-items: center;
+    border: 1px solid var(--borde);
+    border-radius: 999px;
+    padding: 0 0.95rem;
+    font-size: 0.9rem;
+    color: var(--tenue);
+    white-space: nowrap;
+  }
+
+  .chip[aria-pressed="true"],
+  .chip[aria-current="true"] {
+    border-color: var(--acento-fuerte);
+    background: var(--acento-fuerte);
+    color: var(--sobre-acento);
+  }
+
+  /* Sello sobre la foto de una prenda vendida. */
+  .sello-vendida {
+    border: 2px solid currentColor;
+    border-radius: 6px;
+    padding: 0.15rem 0.6rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    color: #fff;
+    background: rgb(7 8 15 / 0.72);
+    transform: rotate(-8deg);
+  }
+
+  .sin-barra {
+    scrollbar-width: none;
+  }
+
+  .sin-barra::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
