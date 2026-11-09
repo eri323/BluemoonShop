@@ -1,4 +1,6 @@
 import type { Metadata } from 'next';
+import { ApartadosProvider } from '@/components/estado/ApartadosProvider';
+import { SCRIPT_TEMA, TemaProvider } from '@/components/estado/TemaProvider';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -9,8 +11,16 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="es-CO">
-      <body>{children}</body>
+    // El script de tema cambia data-theme antes de hidratar; por eso se suprime el aviso.
+    <html lang="es-CO" data-theme="oscuro" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: SCRIPT_TEMA }} />
+      </head>
+      <body>
+        <TemaProvider>
+          <ApartadosProvider>{children}</ApartadosProvider>
+        </TemaProvider>
+      </body>
     </html>
   );
 }
