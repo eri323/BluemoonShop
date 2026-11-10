@@ -10,7 +10,7 @@ const PESTANAS = [
   { href: '/', texto: 'Inicio', Icono: IconoInicio },
   { href: '/catalogo', texto: 'Catálogo', Icono: IconoCatalogo },
   { href: '/match', texto: 'Match', Icono: IconoMatch },
-  { href: '/apartados', texto: 'Apartados', Icono: IconoCorazon },
+  { href: '/apartados', texto: 'Pedido', Icono: IconoCorazon },
 ] as const;
 
 export function PestanasMovil() {

@@ -1,7 +1,7 @@
 'use client';
 
 import { useSyncExternalStore } from 'react';
-import { IconoChat } from '@/components/nav/iconos';
+import { IconoWhatsApp } from '@/components/nav/iconos';
 import type { Prenda } from '@/lib/tipos';
 import { linkWhatsApp, mensajeApartado } from '@/lib/whatsapp';
 
@@ -25,9 +25,9 @@ export function EnlaceWhatsApp({ prendas, children, className = '' }: {
       href={linkWhatsApp(mensajeApartado(prendas, origen))}
       target="_blank"
       rel="noopener noreferrer"
-      className={`boton boton-principal ${className}`}
+      className={`boton boton-whatsapp ${className}`}
     >
-      <IconoChat />
+      <IconoWhatsApp />
       {children}
     </a>
   );

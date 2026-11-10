@@ -1,11 +1,17 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { ModeloPortada, PieDeFoto, RotacionPortada } from '@/components/inicio/PortadaRotativa';
+import { ModeloPortada, RotacionPortada } from '@/components/inicio/PortadaRotativa';
 import { TarjetaPrenda } from '@/components/prenda/TarjetaPrenda';
 import { FOTOS_PORTADA } from '@/data/portada';
 import { RESENAS } from '@/data/resenas';
 import { getProductos, getRecientes } from '@/lib/catalogo';
 import { DESTACADAS, ETIQUETA_CATEGORIA } from '@/lib/tipos';
+
+const DATOS = [
+  { valor: '31 mil', texto: 'seguidoras en Instagram' },
+  { valor: '2020', texto: 'vendiendo desde Medellín' },
+  { valor: '+600', texto: 'prendas publicadas' },
+];
 
 export default function Inicio() {
   const productos = getProductos();
@@ -51,7 +57,14 @@ export default function Inicio() {
             <ModeloPortada className="z-10 mx-auto w-[min(78vw,340px)] esc:w-[clamp(260px,29vw,440px)]" />
 
             <div className="flex flex-col esc:justify-between">
-              <PieDeFoto className="text-center esc:max-w-[22rem] esc:pl-12 esc:pt-6 esc:text-left" />
+              <dl className="grid grid-cols-3 gap-3 text-center esc:grid-cols-1 esc:gap-5 esc:pl-12 esc:pt-4 esc:text-left">
+                {DATOS.map((d) => (
+                  <div key={d.texto} className="flex flex-col-reverse">
+                    <dt className="text-sm text-tenue">{d.texto}</dt>
+                    <dd className="font-titulo text-3xl esc:text-4xl">{d.valor}</dd>
+                  </div>
+                ))}
+              </dl>
               <p
                 aria-hidden="true"
                 className="hidden font-titulo text-[clamp(4rem,10vw,9.75rem)] leading-[0.95] esc:mb-12 esc:ml-5 esc:block"
@@ -120,7 +133,7 @@ export default function Inicio() {
         <div>
           <h2 id="titulo-match" className="text-3xl esc:text-5xl">¿No sabes qué buscar? Juega Match</h2>
           <p className="mt-3 max-w-[40ch] text-tenue">
-            Desliza a la derecha lo que te encanta y a la izquierda lo que no. Al final apartas todo junto.
+            Desliza a la derecha lo que te encanta y a la izquierda lo que no. Al final pides todo junto.
           </p>
           <Link href="/match" className="boton boton-principal mt-6">Jugar Match</Link>
         </div>
@@ -128,7 +141,7 @@ export default function Inicio() {
           {mazo.map((prenda, i) => (
             <div
               key={prenda.slug}
-              className="absolute inset-0 overflow-hidden rounded-2xl border border-borde bg-superficie-alta shadow-brillo"
+              className="absolute inset-0 overflow-hidden rounded-2xl border border-borde bg-superficie-alta"
               style={{ transform: `rotate(${[-9, 6, -2][i]}deg) translateX(${[-26, 26, 0][i]}px)`, zIndex: i }}
             >
               <Image src={prenda.fotos[0]} alt="" fill sizes="240px" className="object-cover" />
