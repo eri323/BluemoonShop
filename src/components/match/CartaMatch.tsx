@@ -63,7 +63,7 @@ export function CartaMatch({ prenda, salida, alDecidir }: {
       onPointerMove={alMover}
       onPointerUp={alSoltar}
       onPointerCancel={alCancelar}
-      className="absolute inset-0 cursor-grab touch-none select-none overflow-hidden rounded-3xl border border-borde bg-superficie-alta shadow-brillo active:cursor-grabbing"
+      className="absolute inset-0 cursor-grab touch-none select-none overflow-hidden rounded-3xl border border-borde bg-superficie-alta active:cursor-grabbing"
       style={{
         transform: `translateX(${desplazamiento}px) rotate(${desplazamiento / 22}deg)`,
         opacity: salida ? 0 : 1,

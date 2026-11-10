@@ -5,7 +5,8 @@ import { usePathname } from 'next/navigation';
 import { useApartados } from '@/components/estado/ApartadosProvider';
 import { useTema } from '@/components/estado/TemaProvider';
 import { Logo } from '@/components/marca/Logo';
-import { IconoLuna, IconoSol } from './iconos';
+import { LINK_SALUDO } from '@/lib/whatsapp';
+import { IconoLuna, IconoSol, IconoWhatsApp } from './iconos';
 
 export const ENLACES = [
   { href: '/', texto: 'Inicio' },
@@ -57,8 +58,18 @@ export function Encabezado() {
             aria-current={estaActivo(pathname, '/apartados') ? 'page' : undefined}
             className="boton boton-secundario hidden min-h-11 esc:inline-flex"
           >
-            Apartados ({slugs.length})
+            Pedido ({slugs.length})
           </Link>
+          <a
+            href={LINK_SALUDO}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Escribir a Bluemoon por WhatsApp"
+            className="boton boton-whatsapp min-h-11 px-3 sm:px-5"
+          >
+            <IconoWhatsApp />
+            <span className="hidden sm:inline">WhatsApp</span>
+          </a>
         </div>
       </div>
     </header>

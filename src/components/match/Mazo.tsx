@@ -6,6 +6,7 @@ import { useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useApartados, useVistosMatch } from '@/components/estado/ApartadosProvider';
 import { IconoCorazon, IconoEquis } from '@/components/nav/iconos';
+import { BotonAnadir } from '@/components/prenda/BotonAnadir';
 import { deckMatch, parseFiltros } from '@/lib/filtros';
 import { ETIQUETA_ESTILO } from '@/lib/tipos';
 import type { Prenda } from '@/lib/tipos';
@@ -14,18 +15,19 @@ import type { Decision } from './CartaMatch';
 
 const DURACION_SALIDA = 240;
 
-function Miniaturas({ prendas, vacio }: { prendas: Prenda[]; vacio: string }) {
+function Miniaturas({ prendas, vacio, conAnadir }: { prendas: Prenda[]; vacio: string; conAnadir?: boolean }) {
   if (prendas.length === 0) return <p className="text-tenue">{vacio}</p>;
   return (
     <ul className="grid grid-cols-4 gap-2 esc:grid-cols-3">
       {prendas.map((p) => (
-        <li key={p.slug}>
+        <li key={p.slug} className="relative">
           <Link
             href={`/prenda/${p.slug}`}
             className="relative block aspect-[4/5] overflow-hidden rounded-lg bg-superficie-alta"
           >
             <Image src={p.fotos[0]} alt={p.nombre} fill sizes="110px" className="object-cover" />
           </Link>
+          {conAnadir && <BotonAnadir slug={p.slug} nombre={p.nombre} className="absolute bottom-1 right-1 px-2" />}
         </li>
       ))}
     </ul>
@@ -37,13 +39,18 @@ export function Mazo({ prendas }: { prendas: Prenda[] }) {
   const { estilo } = parseFiltros(new URLSearchParams(params.toString()));
   const filtros = { estilo, orden: 'nuevo' as const };
 
-  const { vistos, marcar, reiniciar } = useVistosMatch();
+  const { vistos, marcar, desmarcar, reiniciar } = useVistosMatch();
   const { slugs, tiene, alternar } = useApartados();
 
   const total = deckMatch(prendas, new Set(), filtros).length;
   const mazo = deckMatch(prendas, vistos, filtros);
   const actual = mazo[0];
   const apartadas = slugs.flatMap((slug) => prendas.find((p) => p.slug === slug) ?? []);
+  // Las que ya pasaron por el mazo y no están apartadas.
+  const pasadas = prendas.filter((p) => vistos.has(p.slug) && !slugs.includes(p.slug));
+
+  /** Última carta decidida, para poder devolverla. `aparto` dice si esa decisión la apartó. */
+  const [ultima, setUltima] = useState<{ slug: string; aparto: boolean } | null>(null);
 
   const [salida, setSalida] = useState<Decision | null>(null);
   const temporizador = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -51,9 +58,24 @@ export function Mazo({ prendas }: { prendas: Prenda[] }) {
 
   /** Aplica la decisión: derecha aparta (si no estaba) y marca; izquierda solo marca. */
   const resolver = useCallback((slug: string, decision: Decision) => {
-    if (decision === 'encanta' && !tiene(slug)) alternar(slug);
+    const aparto = decision === 'encanta' && !tiene(slug);
+    if (aparto) alternar(slug);
     marcar(slug);
+    setUltima({ slug, aparto });
   }, [tiene, alternar, marcar]);
+
+  /** Devuelve la última carta al mazo; si se había apartado con esa decisión, la quita. */
+  const deshacer = useCallback(() => {
+    if (!ultima) return;
+    if (ultima.aparto && tiene(ultima.slug)) alternar(ultima.slug);
+    desmarcar(ultima.slug);
+    setUltima(null);
+  }, [ultima, tiene, alternar, desmarcar]);
+
+  const volverAJugar = () => {
+    setUltima(null);
+    reiniciar();
+  };
 
   /** Decisión por botón o teclado: la carta vuela y luego se resuelve. */
   const decidir = useCallback((decision: Decision) => {
@@ -100,14 +122,22 @@ export function Mazo({ prendas }: { prendas: Prenda[] }) {
           </div>
         )}
 
+        {pasadas.length > 0 && (
+          <section aria-labelledby="titulo-pasadas" className="mt-10 text-left">
+            <h2 id="titulo-pasadas" className="text-2xl">Las que pasaste</h2>
+            <p className="mb-3 mt-1 text-sm text-tenue">Si te arrepentiste de alguna, toca Añadir para sumarla a tu pedido.</p>
+            <Miniaturas prendas={pasadas} vacio="" conAnadir />
+          </section>
+        )}
+
         <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
           {apartadas.length > 0 && (
-            <Link href="/apartados" className="boton boton-principal">Ver mis apartados</Link>
+            <Link href="/apartados" className="boton boton-principal">Ver mi pedido</Link>
           )}
           {sinPrendas ? (
             <Link href="/catalogo" className="boton boton-secundario">Ir al catálogo</Link>
           ) : (
-            <button type="button" onClick={reiniciar} className="boton boton-secundario">Volver a jugar</button>
+            <button type="button" onClick={volverAJugar} className="boton boton-secundario">Volver a jugar</button>
           )}
         </div>
       </section>
@@ -155,22 +185,38 @@ export function Mazo({ prendas }: { prendas: Prenda[] }) {
             type="button"
             onClick={() => decidir('encanta')}
             aria-label={`Me encanta ${actual.nombre}`}
-            className="grid size-16 place-items-center rounded-full bg-acento-fuerte text-sobre-acento shadow-brillo transition-transform active:scale-90"
+            className="grid size-16 place-items-center rounded-full bg-acento-fuerte text-sobre-acento transition-transform active:scale-90"
           >
             <IconoCorazon relleno />
           </button>
         </div>
 
-        <p className="mt-4 text-center text-sm text-tenue" aria-live="polite">
-          {posicion} de {total}
-        </p>
+        <div className="mt-4 flex items-center justify-center gap-4 text-sm">
+          <p className="text-tenue" aria-live="polite">
+            {posicion} de {total}
+          </p>
+          <button
+            type="button"
+            onClick={deshacer}
+            disabled={!ultima}
+            className="min-h-11 px-2 text-acento underline underline-offset-4 disabled:text-tenue disabled:no-underline disabled:opacity-60"
+          >
+            Deshacer la última
+          </button>
+        </div>
       </section>
 
       <aside aria-labelledby="titulo-encantaron" className="hidden esc:block">
         <h2 id="titulo-encantaron" className="mb-3 text-2xl">Te encantaron</h2>
         <Miniaturas prendas={apartadas} vacio="Lo que te encante aparece aquí." />
         {apartadas.length > 0 && (
-          <Link href="/apartados" className="boton boton-secundario mt-5 w-full">Ver mis apartados</Link>
+          <Link href="/apartados" className="boton boton-secundario mt-5 w-full">Ver mi pedido</Link>
+        )}
+        {pasadas.length > 0 && (
+          <>
+            <h2 className="mb-3 mt-9 text-2xl">Las que pasaste</h2>
+            <Miniaturas prendas={pasadas} vacio="" conAnadir />
+          </>
         )}
       </aside>
     </div>

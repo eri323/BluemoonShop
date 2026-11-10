@@ -20,3 +20,6 @@ export function mensajeApartado(prendas: Prenda[], baseUrl: string): string {
 export function linkWhatsApp(texto: string): string {
   return `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(texto)}`;
 }
+
+/** Chat con la tienda sin una prenda en particular: para preguntar antes de apartar. */
+export const LINK_SALUDO = linkWhatsApp('Hola Bluemoon, vengo de la página web y tengo una pregunta.');

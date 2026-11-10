@@ -1,14 +1,14 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import type { Prenda } from '@/lib/tipos';
-import { BotonCorazon } from './BotonCorazon';
+import { BotonAnadir } from './BotonAnadir';
 import { Precio } from './Precio';
 
 export function etiquetaTalla(talla: Prenda['talla']): string {
   return talla === 'Única' ? 'Talla única' : `Talla ${talla}`;
 }
 
-/** Tarjeta del catálogo. Toda la tarjeta lleva a la ficha; el corazón aparta sin salir. */
+/** Tarjeta del catálogo. Toda la tarjeta lleva a la ficha; el botón Añadir la suma al pedido sin salir. */
 export function TarjetaPrenda({ prenda, prioridad = false }: { prenda: Prenda; prioridad?: boolean }) {
   const vendida = prenda.estado === 'vendida';
 
@@ -42,7 +42,7 @@ export function TarjetaPrenda({ prenda, prioridad = false }: { prenda: Prenda; p
         </p>
       </div>
 
-      {!vendida && <BotonCorazon slug={prenda.slug} nombre={prenda.nombre} className="absolute right-2 top-2 z-10" />}
+      {!vendida && <BotonAnadir slug={prenda.slug} nombre={prenda.nombre} className="absolute right-2 top-2 z-10" />}
     </article>
   );
 }

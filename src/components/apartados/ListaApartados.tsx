@@ -18,8 +18,8 @@ export function ListaApartados({ prendas }: { prendas: Prenda[] }) {
   if (apartadas.length === 0) {
     return (
       <div className="rounded-2xl border border-borde bg-superficie px-6 py-12 text-center">
-        <p className="font-titulo text-2xl">Aún no has apartado nada</p>
-        <p className="mt-2 text-tenue">Toca el corazón de una prenda o juega Match para armar tu lista.</p>
+        <p className="font-titulo text-2xl">Tu pedido está vacío</p>
+        <p className="mt-2 text-tenue">Toca Añadir en una prenda o juega Match para armarlo.</p>
         <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-center">
           <Link href="/catalogo" className="boton boton-principal">Ver el catálogo</Link>
           <Link href="/match" className="boton boton-secundario">Jugar Match</Link>
@@ -64,7 +64,7 @@ export function ListaApartados({ prendas }: { prendas: Prenda[] }) {
         aria-labelledby="titulo-resumen"
         className="mt-8 rounded-2xl border border-borde bg-superficie p-5 esc:sticky esc:top-24 esc:mt-0"
       >
-        <h2 id="titulo-resumen" className="text-2xl">Tu pedido</h2>
+        <h2 id="titulo-resumen" className="text-2xl">Resumen</h2>
         <p className="mt-3 flex items-baseline justify-between">
           <span className="text-tenue">
             {apartadas.length} {apartadas.length === 1 ? 'prenda' : 'prendas'}
@@ -73,7 +73,7 @@ export function ListaApartados({ prendas }: { prendas: Prenda[] }) {
         </p>
 
         <EnlaceWhatsApp prendas={apartadas} className="mt-5 w-full">
-          {apartadas.length === 1 ? 'Apartar por WhatsApp' : 'Apartar todo por WhatsApp'}
+          {apartadas.length === 1 ? 'Pedir por WhatsApp' : 'Pedir todo por WhatsApp'}
         </EnlaceWhatsApp>
 
         <h3 className="mb-2 mt-6 font-texto text-sm font-semibold text-tenue">Así le llega el mensaje a Bluemoon</h3>

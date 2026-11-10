@@ -48,6 +48,8 @@ type Apartados = {
 type VistosMatch = {
   vistos: Set<string>;
   marcar(slug: string): void;
+  /** Devuelve una prenda al mazo, para deshacer. */
+  desmarcar(slug: string): void;
   reiniciar(): void;
 };
 
@@ -72,8 +74,16 @@ export function ApartadosProvider({ children }: { children: React.ReactNode }) {
   // Lo ya deslizado en Match solo dura mientras la página siga abierta.
   const [vistos, setVistos] = useState<Set<string>>(() => new Set());
   const marcar = useCallback((slug: string) => setVistos((prev) => new Set(prev).add(slug)), []);
+  const desmarcar = useCallback((slug: string) => setVistos((prev) => {
+    const siguiente = new Set(prev);
+    siguiente.delete(slug);
+    return siguiente;
+  }), []);
   const reiniciar = useCallback(() => setVistos(new Set()), []);
-  const vistosMatch = useMemo(() => ({ vistos, marcar, reiniciar }), [vistos, marcar, reiniciar]);
+  const vistosMatch = useMemo(
+    () => ({ vistos, marcar, desmarcar, reiniciar }),
+    [vistos, marcar, desmarcar, reiniciar],
+  );
 
   return (
     <ApartadosContext.Provider value={apartados}>

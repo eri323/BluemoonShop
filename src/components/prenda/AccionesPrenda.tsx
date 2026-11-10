@@ -13,7 +13,7 @@ export function AccionesPrenda({ prenda }: { prenda: Prenda }) {
   return (
     <div className="flex flex-col gap-3 sm:flex-row">
       <EnlaceWhatsApp prendas={[prenda]} className="flex-1">
-        Apartar por WhatsApp
+        Pedir por WhatsApp
       </EnlaceWhatsApp>
       <button
         type="button"
@@ -22,7 +22,7 @@ export function AccionesPrenda({ prenda }: { prenda: Prenda }) {
         className="boton boton-secundario flex-1"
       >
         <IconoCorazon relleno={apartada} />
-        {apartada ? 'En tus apartados' : 'Agregar a apartados'}
+        {apartada ? 'En tu pedido' : 'Añadir al pedido'}
       </button>
     </div>
   );

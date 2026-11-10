@@ -21,8 +21,8 @@
   --luna: #c9d3fa;
   /* Solo para prendas vendidas. */
   --vino: #7a1f2b;
-  --brillo: 0 0 0 transparent;
-  --brillo-texto: none;
+  /* Verde de WhatsApp oscurecido para que el texto blanco se lea. */
+  --whatsapp: #1a7f4b;
 }
 
 [data-theme="oscuro"] {
@@ -38,8 +38,7 @@
   --sobre-acento: #ffffff;
   --luna: #1c2a7a;
   --vino: #8f2634;
-  --brillo: 0 0 28px rgb(58 96 255 / 0.5);
-  --brillo-texto: 0 0 18px rgb(96 128 255 / 0.75);
+  --whatsapp: #1a7f4b;
 }
 
 @theme inline {
@@ -54,9 +53,9 @@
   --color-sobre-acento: var(--sobre-acento);
   --color-luna: var(--luna);
   --color-vino: var(--vino);
+  --color-whatsapp: var(--whatsapp);
   --font-titulo: var(--font-bodoni), "Bodoni MT", Didot, Georgia, serif;
   --font-texto: var(--font-figtree), system-ui, sans-serif;
-  --shadow-brillo: var(--brillo);
   /* A partir de aquí hay menú arriba; por debajo, pestañas abajo. */
   --breakpoint-esc: 900px;
 }
@@ -119,7 +118,13 @@ h3 {
     border-color: var(--acento-fuerte);
     background: var(--acento-fuerte);
     color: var(--sobre-acento);
-    box-shadow: var(--brillo);
+  }
+
+  /* Solo para lo que abre WhatsApp: la clienta reconoce el color antes de leer. */
+  .boton-whatsapp {
+    border-color: var(--whatsapp);
+    background: var(--whatsapp);
+    color: #fff;
   }
 
   .boton-secundario {
@@ -132,6 +137,11 @@ h3 {
     .boton-principal:hover {
       border-color: color-mix(in oklab, var(--acento-fuerte) 84%, black);
       background: color-mix(in oklab, var(--acento-fuerte) 84%, black);
+    }
+
+    .boton-whatsapp:hover {
+      border-color: color-mix(in oklab, var(--whatsapp) 84%, black);
+      background: color-mix(in oklab, var(--whatsapp) 84%, black);
     }
 
     .boton-secundario:hover {
@@ -157,6 +167,10 @@ h3 {
     font-size: 0.9rem;
     color: var(--tenue);
     white-space: nowrap;
+  }
+
+  .chip:disabled {
+    opacity: 0.4;
   }
 
   .chip[aria-pressed="true"],

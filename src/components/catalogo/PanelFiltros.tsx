@@ -2,8 +2,8 @@
 
 import { ORDENES } from '@/lib/filtros';
 import type { Filtros, Orden } from '@/lib/filtros';
-import { ESTILOS, ETIQUETA_CATEGORIA, ETIQUETA_ESTILO, TALLAS } from '@/lib/tipos';
-import type { Categoria } from '@/lib/tipos';
+import { ETIQUETA_ESTILO, TALLAS } from '@/lib/tipos';
+import type { Talla } from '@/lib/tipos';
 import { FormMedidas } from './FormMedidas';
 
 const ETIQUETA_ORDEN: Record<Orden, string> = {
@@ -12,37 +12,11 @@ const ETIQUETA_ORDEN: Record<Orden, string> = {
   'precio-desc': 'Mayor precio',
 };
 
-function Grupo<T extends string>({ titulo, opciones, etiqueta, actual, alElegir }: {
-  titulo: string;
-  opciones: readonly T[];
-  etiqueta: (opcion: T) => string;
-  actual: T | undefined;
-  alElegir: (opcion: T | undefined) => void;
-}) {
-  return (
-    <fieldset className="min-w-0">
-      <legend className="mb-2 text-sm font-semibold">{titulo}</legend>
-      {/* En celular los chips se deslizan de lado; en computador se acomodan en varias filas. */}
-      <div className="sin-barra -mx-4 flex gap-2 overflow-x-auto px-4 esc:mx-0 esc:flex-wrap esc:overflow-visible esc:px-0">
-        {opciones.map((opcion) => (
-          <button
-            key={opcion}
-            type="button"
-            className="chip"
-            aria-pressed={actual === opcion}
-            onClick={() => alElegir(actual === opcion ? undefined : opcion)}
-          >
-            {etiqueta(opcion)}
-          </button>
-        ))}
-      </div>
-    </fieldset>
-  );
-}
-
-export function PanelFiltros({ filtros, categorias, total, hayFiltros, alCambiar, alLimpiar }: {
+/** Filtros secundarios del catálogo: talla, medidas y orden. El tipo de prenda va en FilaDestacadas. */
+export function PanelFiltros({ filtros, porTalla, total, hayFiltros, alCambiar, alLimpiar }: {
   filtros: Filtros;
-  categorias: Categoria[];
+  /** Cuántas prendas quedarían al elegir cada talla, con los demás filtros puestos. */
+  porTalla: Record<Talla, number>;
   total: number;
   hayFiltros: boolean;
   alCambiar: (f: Filtros) => void;
@@ -50,27 +24,28 @@ export function PanelFiltros({ filtros, categorias, total, hayFiltros, alCambiar
 }) {
   return (
     <aside aria-label="Filtros" className="flex flex-col gap-4 esc:sticky esc:top-24 esc:self-start">
-      <Grupo
-        titulo="Categoría"
-        opciones={categorias}
-        etiqueta={(c) => ETIQUETA_CATEGORIA[c]}
-        actual={filtros.categoria}
-        alElegir={(categoria) => alCambiar({ ...filtros, categoria })}
-      />
-      <Grupo
-        titulo="Estilo"
-        opciones={ESTILOS}
-        etiqueta={(e) => ETIQUETA_ESTILO[e]}
-        actual={filtros.estilo}
-        alElegir={(estilo) => alCambiar({ ...filtros, estilo })}
-      />
-      <Grupo
-        titulo="Talla"
-        opciones={TALLAS}
-        etiqueta={(t) => t}
-        actual={filtros.talla}
-        alElegir={(talla) => alCambiar({ ...filtros, talla })}
-      />
+      <fieldset className="min-w-0">
+        <legend className="mb-2 text-sm font-semibold">Talla</legend>
+        {/* En celular los chips se deslizan de lado; en computador se acomodan en varias filas. */}
+        <div className="sin-barra -mx-4 flex gap-2 overflow-x-auto px-4 esc:mx-0 esc:flex-wrap esc:overflow-visible esc:px-0">
+          {TALLAS.map((talla) => {
+            const elegida = filtros.talla === talla;
+            return (
+              <button
+                key={talla}
+                type="button"
+                className="chip"
+                aria-pressed={elegida}
+                disabled={porTalla[talla] === 0 && !elegida}
+                onClick={() => alCambiar({ ...filtros, talla: elegida ? undefined : talla })}
+              >
+                {talla}
+                <span className="ml-1.5 opacity-70">{porTalla[talla]}</span>
+              </button>
+            );
+          })}
+        </div>
+      </fieldset>
 
       <FormMedidas
         medidas={filtros.medidas ?? {}}
@@ -78,6 +53,20 @@ export function PanelFiltros({ filtros, categorias, total, hayFiltros, alCambiar
           alCambiar({ ...filtros, medidas: Object.keys(medidas).length > 0 ? medidas : undefined })
         }
       />
+
+      {/* El estilo ya no se elige aquí, pero un enlace viejo puede traerlo: se muestra para poder quitarlo. */}
+      {filtros.estilo && (
+        <button
+          type="button"
+          className="chip self-start"
+          aria-pressed="true"
+          onClick={() => alCambiar({ ...filtros, estilo: undefined })}
+        >
+          Estilo: {ETIQUETA_ESTILO[filtros.estilo]}
+          <span className="ml-2" aria-hidden="true">×</span>
+          <span className="sr-only">, quitar</span>
+        </button>
+      )}
 
       <div className="flex min-h-12 flex-wrap items-center gap-x-4 gap-y-2 border-t border-borde pt-4">
         <p aria-live="polite" className="font-semibold">
@@ -92,7 +81,7 @@ export function PanelFiltros({ filtros, categorias, total, hayFiltros, alCambiar
           aria-label="Ordenar por"
           value={filtros.orden}
           onChange={(e) => alCambiar({ ...filtros, orden: e.target.value as Orden })}
-          className="ml-auto h-11 rounded-xl border border-borde bg-superficie px-2 text-base text-texto"
+          className="ml-auto h-11 rounded-lg border border-borde bg-superficie px-2 text-base text-texto"
         >
           {ORDENES.map((orden) => (
             <option key={orden} value={orden}>{ETIQUETA_ORDEN[orden]}</option>
