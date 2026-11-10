@@ -3,6 +3,7 @@ import { Bodoni_Moda, Figtree } from 'next/font/google';
 import { ApartadosProvider } from '@/components/estado/ApartadosProvider';
 import { SCRIPT_TEMA, TemaProvider } from '@/components/estado/TemaProvider';
 import { Encabezado } from '@/components/nav/Encabezado';
+import { urlDelSitio } from '@/lib/sitio';
 import { PestanasMovil } from '@/components/nav/PestanasMovil';
 import './globals.css';
 
@@ -11,7 +12,7 @@ const figtree = Figtree({ subsets: ['latin'], variable: '--font-figtree', displa
 const bodoni = Bodoni_Moda({ subsets: ['latin'], weight: '600', variable: '--font-bodoni', display: 'swap' });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'),
+  metadataBase: new URL(urlDelSitio()),
   title: { default: 'Bluemoon · tienda online', template: '%s · Bluemoon' },
   description: 'Ropa alternativa para mujer. Envíos a todo Colombia desde Medellín.',
   robots: { index: false, follow: false },
