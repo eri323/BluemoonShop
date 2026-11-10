@@ -9,7 +9,16 @@ export const CATEGORIAS = [
 ] as const;
 export type Categoria = (typeof CATEGORIAS)[number];
 
-export const TALLAS = ['XS', 'S', 'M', 'L', 'XL', 'Única'] as const;
+/**
+ * Orden de las historias destacadas de @bluemoon_shop.co, que es como la clienta ya conoce
+ * el catálogo. Corsés no tiene destacada propia y va al final.
+ */
+export const DESTACADAS: readonly Categoria[] = [
+  'blusas', 'vestidos', 'medias', 'conjuntos', 'cardigan', 'bottoms',
+  'lenceria', 'bikinis', 'bodys', 'pijamas', 'accesorios', 'corsets',
+];
+
+export const TALLAS =['XS', 'S', 'M', 'L', 'XL', 'Única'] as const;
 export type Talla = (typeof TALLAS)[number];
 
 export const ETIQUETA_ESTILO: Record<Estilo, string> = {

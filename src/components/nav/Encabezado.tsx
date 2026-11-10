@@ -24,7 +24,7 @@ export function Encabezado() {
 
   return (
     <header className="sticky top-0 z-30 border-b border-borde bg-fondo/85 backdrop-blur-md">
-      <div className="mx-auto flex h-16 max-w-6xl items-center gap-6 px-4 esc:px-8">
+      <div className="mx-auto flex h-16 max-w-[90rem] items-center gap-6 px-4 esc:px-8">
         <Link href="/" className="flex items-center gap-3" aria-label="Bluemoon, ir al inicio">
           <Logo tamano={40} />
           <span className="font-titulo text-xl">Bluemoon</span>

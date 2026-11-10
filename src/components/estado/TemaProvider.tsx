@@ -10,12 +10,12 @@ const CLAVE = 'bm-tema';
  * Se ejecuta en <head> antes de pintar, para que no parpadee el tema al cargar.
  * Debe quedar en línea con lo que hace `aplicar`.
  */
-export const SCRIPT_TEMA = `try{document.documentElement.dataset.theme=localStorage.getItem('${CLAVE}')==='claro'?'claro':'oscuro'}catch(e){}`;
+export const SCRIPT_TEMA = `try{document.documentElement.dataset.theme=localStorage.getItem('${CLAVE}')==='oscuro'?'oscuro':'claro'}catch(e){}`;
 
 const oyentes = new Set<() => void>();
 
 function leer(): Tema {
-  return document.documentElement.dataset.theme === 'claro' ? 'claro' : 'oscuro';
+  return document.documentElement.dataset.theme === 'oscuro' ? 'oscuro' : 'claro';
 }
 
 function aplicar(tema: Tema) {
@@ -38,7 +38,7 @@ type ValorTema = { tema: Tema; alternar(): void };
 const TemaContext = createContext<ValorTema | null>(null);
 
 export function TemaProvider({ children }: { children: React.ReactNode }) {
-  const tema = useSyncExternalStore<Tema>(suscribir, leer, () => 'oscuro');
+  const tema = useSyncExternalStore<Tema>(suscribir, leer, () => 'claro');
   const valor = useMemo<ValorTema>(
     () => ({ tema, alternar: () => aplicar(leer() === 'oscuro' ? 'claro' : 'oscuro') }),
     [tema],
