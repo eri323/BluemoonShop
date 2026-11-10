@@ -1,9 +1,9 @@
 'use client';
 
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 
-export type FotoPortada = { src: string; alt: string };
+export type FotoPortada = { src: string; nombre: string };
 
 const INTERVALO_MS = 5000;
 
@@ -15,8 +15,18 @@ const DESVANECIDO =
   'linear-gradient(to bottom, transparent 0, #000 7%, #000 86%, transparent 100%), ' +
   'linear-gradient(to right, transparent 0, #000 6%, #000 94%, transparent 100%)';
 
-/** Modelo recortada de la portada: pasa a la foto siguiente cada 5 segundos. */
-export function PortadaRotativa({ fotos, className = '' }: { fotos: FotoPortada[]; className?: string }) {
+type Rotacion = { fotos: FotoPortada[]; actual: number };
+
+const RotacionContext = createContext<Rotacion | null>(null);
+
+function useRotacion(): Rotacion {
+  const ctx = useContext(RotacionContext);
+  if (!ctx) throw new Error('Debe usarse dentro de <RotacionPortada>');
+  return ctx;
+}
+
+/** Lleva la cuenta de qué vestido se muestra; la modelo y el pie de foto la leen de aquí. */
+export function RotacionPortada({ fotos, children }: { fotos: FotoPortada[]; children: React.ReactNode }) {
   const [actual, setActual] = useState(0);
   const total = fotos.length;
 
@@ -31,45 +41,63 @@ export function PortadaRotativa({ fotos, className = '' }: { fotos: FotoPortada[
     return () => window.clearInterval(id);
   }, [total]);
 
+  return <RotacionContext.Provider value={{ fotos, actual }}>{children}</RotacionContext.Provider>;
+}
+
+/** La modelo recortada sobre la luna azul. */
+export function ModeloPortada({ className = '' }: { className?: string }) {
+  const { fotos, actual } = useRotacion();
+  const total = fotos.length;
   if (total === 0) return null;
 
   // Solo se montan la anterior (se desvanece), la actual y la siguiente (se va descargando).
   const visibles = [...new Set([(actual - 1 + total) % total, actual, (actual + 1) % total])];
 
   return (
-    <div className={className}>
-      <div className="relative aspect-[3/4]">
-        {/* Halo de color detrás de la modelo. */}
-        <div
-          aria-hidden="true"
-          className="absolute left-1/2 top-[46%] aspect-square w-[92%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-acento/15 blur-2xl"
-        />
-        <div className="absolute inset-0" style={{ maskImage: DESVANECIDO, WebkitMaskImage: DESVANECIDO, maskComposite: 'intersect', WebkitMaskComposite: 'source-in' }}>
-          {visibles.map((i) => (
-            <Image
-              key={fotos[i].src}
-              src={fotos[i].src}
-              alt={i === actual ? fotos[i].alt : ''}
-              aria-hidden={i === actual ? undefined : true}
-              fill
-              sizes="(min-width: 900px) 440px, 78vw"
-              preload={i === 0}
-              loading={i === 0 ? 'eager' : 'lazy'}
-              className={`object-contain object-bottom transition-opacity duration-700 ease-out ${i === actual ? 'opacity-100' : 'opacity-0'}`}
-            />
-          ))}
-        </div>
+    <div className={`relative aspect-[3/4] ${className}`}>
+      <div
+        aria-hidden="true"
+        className="absolute left-1/2 top-[45%] aspect-square w-[94%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-luna"
+      />
+      <div
+        className="absolute inset-0"
+        style={{
+          maskImage: DESVANECIDO,
+          WebkitMaskImage: DESVANECIDO,
+          maskComposite: 'intersect',
+          WebkitMaskComposite: 'source-in',
+        }}
+      >
+        {visibles.map((i) => (
+          <Image
+            key={fotos[i].src}
+            src={fotos[i].src}
+            alt={i === actual ? `Modelo con ${fotos[i].nombre.toLowerCase()}` : ''}
+            aria-hidden={i === actual ? undefined : true}
+            fill
+            sizes="(min-width: 900px) 440px, 78vw"
+            preload={i === 0}
+            loading={i === 0 ? 'eager' : 'lazy'}
+            className={`object-contain object-bottom transition-opacity duration-700 ease-out ${i === actual ? 'opacity-100' : 'opacity-0'}`}
+          />
+        ))}
       </div>
-      {total > 1 && (
-        <div className="mt-3 flex justify-center gap-1.5" aria-hidden="true">
-          {fotos.map((f, i) => (
-            <span
-              key={f.src}
-              className={`h-1.5 rounded-full transition-all duration-300 ${i === actual ? 'w-5 bg-acento' : 'w-1.5 bg-borde'}`}
-            />
-          ))}
-        </div>
-      )}
+    </div>
+  );
+}
+
+/** Nombre del vestido que se está mostrando y su lugar en la serie. */
+export function PieDeFoto({ className = '' }: { className?: string }) {
+  const { fotos, actual } = useRotacion();
+  if (fotos.length === 0) return null;
+  return (
+    // La foto ya lleva este nombre en su texto alternativo; aquí sería leerlo dos veces.
+    <div aria-hidden="true" className={className}>
+      <p className="text-sm tabular-nums text-tenue">
+        {actual + 1} / {fotos.length}
+      </p>
+      {/* Alto fijo de dos renglones: en celular lo de abajo no salta cuando cambia el nombre. */}
+      <p className="mt-1 min-h-[2.4em] font-titulo text-2xl leading-[1.2]">{fotos[actual].nombre}</p>
     </div>
   );
 }

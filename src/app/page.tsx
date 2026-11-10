@@ -1,17 +1,11 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { PortadaRotativa } from '@/components/inicio/PortadaRotativa';
+import { ModeloPortada, PieDeFoto, RotacionPortada } from '@/components/inicio/PortadaRotativa';
 import { TarjetaPrenda } from '@/components/prenda/TarjetaPrenda';
 import { FOTOS_PORTADA } from '@/data/portada';
 import { RESENAS } from '@/data/resenas';
 import { getProductos, getRecientes } from '@/lib/catalogo';
 import { DESTACADAS, ETIQUETA_CATEGORIA } from '@/lib/tipos';
-
-const DATOS = [
-  { valor: '31 mil', texto: 'seguidoras en Instagram' },
-  { valor: '2020', texto: 'vendiendo desde Medellín' },
-  { valor: '+600', texto: 'prendas publicadas' },
-];
 
 export default function Inicio() {
   const productos = getProductos();
@@ -32,52 +26,41 @@ export default function Inicio() {
     <>
       <section className="pb-12 pt-8 esc:pb-20 esc:pt-12">
         <h1 className="sr-only">Bluemoon</h1>
-        <div className="grid gap-7 esc:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] esc:gap-0">
-          <div className="flex flex-col text-center esc:justify-between esc:text-left">
-            <p
-              aria-hidden="true"
-              className="font-titulo text-[clamp(3rem,16.5vw,5.5rem)] leading-[0.95] esc:mr-5 esc:mt-10 esc:text-right esc:text-[clamp(4rem,10vw,9.75rem)]"
-            >
-              <span className="esc:hidden">Bluemoon</span>
-              <span className="hidden esc:inline">Blue</span>
-            </p>
-            <div className="mt-4 esc:mt-0 esc:pb-8 esc:pr-12">
-              <p className="text-sm font-semibold uppercase tracking-[0.16em] text-acento">
-                Tienda online · Medellín
+        <RotacionPortada fotos={FOTOS_PORTADA}>
+          <div className="grid gap-7 esc:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] esc:gap-0">
+            <div className="flex flex-col text-center esc:justify-between esc:text-left">
+              <p
+                aria-hidden="true"
+                className="font-titulo text-[clamp(3rem,16.5vw,5.5rem)] leading-[0.95] esc:mr-5 esc:mt-10 esc:text-right esc:text-[clamp(4rem,10vw,9.75rem)]"
+              >
+                <span className="esc:hidden">Bluemoon</span>
+                <span className="hidden esc:inline">Blue</span>
               </p>
-              <p className="mx-auto mt-3 max-w-[36ch] text-lg text-tenue esc:mx-0">
-                Ropa alternativa para mujer: gótico, coquette y vintage. Pocas unidades de cada prenda y
-                envíos a todo Colombia.
-              </p>
-              <div className="mt-6 flex flex-wrap justify-center gap-3 esc:justify-start">
-                <Link href="/catalogo" className="boton boton-principal">Ver el catálogo</Link>
-                <Link href="/match" className="boton boton-secundario">Jugar Match</Link>
+              <div className="mt-4 esc:mt-0 esc:pb-8 esc:pr-12">
+                <p className="mx-auto max-w-[36ch] text-lg text-tenue esc:mx-0">
+                  Ropa alternativa para mujer, desde Medellín: gótico, coquette y vintage. Pocas unidades
+                  de cada prenda y envíos a todo Colombia.
+                </p>
+                <div className="mt-6 flex flex-wrap justify-center gap-3 esc:justify-start">
+                  <Link href="/catalogo" className="boton boton-principal">Ver el catálogo</Link>
+                  <Link href="/match" className="boton boton-secundario">Jugar Match</Link>
+                </div>
               </div>
             </div>
-          </div>
 
-          <PortadaRotativa
-            fotos={FOTOS_PORTADA}
-            className="relative z-10 mx-auto w-[min(78vw,340px)] esc:w-[clamp(260px,29vw,440px)]"
-          />
+            <ModeloPortada className="z-10 mx-auto w-[min(78vw,340px)] esc:w-[clamp(260px,29vw,440px)]" />
 
-          <div className="flex flex-col esc:justify-between">
-            <dl className="grid grid-cols-3 gap-3 text-center esc:grid-cols-1 esc:gap-5 esc:pl-12 esc:pt-4 esc:text-left">
-              {DATOS.map((d) => (
-                <div key={d.texto} className="flex flex-col-reverse">
-                  <dt className="text-sm text-tenue">{d.texto}</dt>
-                  <dd className="font-titulo text-3xl esc:text-4xl">{d.valor}</dd>
-                </div>
-              ))}
-            </dl>
-            <p
-              aria-hidden="true"
-              className="hidden font-titulo text-[clamp(4rem,10vw,9.75rem)] leading-[0.95] esc:ml-5 esc:mb-12 esc:block"
-            >
-              moon
-            </p>
+            <div className="flex flex-col esc:justify-between">
+              <PieDeFoto className="text-center esc:max-w-[22rem] esc:pl-12 esc:pt-6 esc:text-left" />
+              <p
+                aria-hidden="true"
+                className="hidden font-titulo text-[clamp(4rem,10vw,9.75rem)] leading-[0.95] esc:mb-12 esc:ml-5 esc:block"
+              >
+                moon
+              </p>
+            </div>
           </div>
-        </div>
+        </RotacionPortada>
       </section>
 
       <section aria-labelledby="titulo-tipos">

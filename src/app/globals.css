@@ -8,7 +8,7 @@
 :root,
 [data-theme="claro"] {
   color-scheme: light;
-  --fondo: #f2f1f8;
+  --fondo: #eef0f7;
   --superficie: #ffffff;
   --superficie-alta: #e6e5f1;
   --borde: #cdcde0;
@@ -17,6 +17,10 @@
   --acento: #1b3be0;
   --acento-fuerte: #1b3be0;
   --sobre-acento: #ffffff;
+  /* El disco detrás de la modelo: la luna azul del nombre. */
+  --luna: #c9d3fa;
+  /* Solo para prendas vendidas. */
+  --vino: #7a1f2b;
   --brillo: 0 0 0 transparent;
   --brillo-texto: none;
 }
@@ -32,6 +36,8 @@
   --acento: #6f8bff;
   --acento-fuerte: #2447f5;
   --sobre-acento: #ffffff;
+  --luna: #1c2a7a;
+  --vino: #8f2634;
   --brillo: 0 0 28px rgb(58 96 255 / 0.5);
   --brillo-texto: 0 0 18px rgb(96 128 255 / 0.75);
 }
@@ -46,6 +52,8 @@
   --color-acento: var(--acento);
   --color-acento-fuerte: var(--acento-fuerte);
   --color-sobre-acento: var(--sobre-acento);
+  --color-luna: var(--luna);
+  --color-vino: var(--vino);
   --font-titulo: var(--font-bodoni), "Bodoni MT", Didot, Georgia, serif;
   --font-texto: var(--font-figtree), system-ui, sans-serif;
   --shadow-brillo: var(--brillo);
@@ -95,10 +103,9 @@ h3 {
     border-radius: 6px;
     border: 1px solid transparent;
     padding: 0 1.6rem;
-    font-size: 0.8125rem;
+    font-size: 0.95rem;
     font-weight: 600;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
+    letter-spacing: 0.01em;
     white-space: nowrap;
     transition: transform 120ms ease-out, background-color 160ms ease-out, border-color 160ms ease-out,
       color 160ms ease-out;
@@ -167,7 +174,7 @@ h3 {
     font-weight: 800;
     letter-spacing: 0.12em;
     color: #fff;
-    background: rgb(7 8 15 / 0.72);
+    background: color-mix(in oklab, var(--vino) 90%, transparent);
     transform: rotate(-8deg);
   }
 
